@@ -9,7 +9,7 @@ angular.module('todomvc', ['ngRoute', 'ngResource'])
 	.config(function ($routeProvider) {
 		'use strict';
 
-		var routeConfig = {
+		const routeConfig = {
 			controller: 'TodoCtrl',
 			templateUrl: 'todomvc-index.html',
 			resolve: {
