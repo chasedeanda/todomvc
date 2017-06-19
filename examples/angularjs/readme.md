@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Phase 2: ES6 Refactor. Welcome to the future!
 
 * ES6 classes
