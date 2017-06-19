@@ -1,3 +1,13 @@
+# Phase 1: Webpack 2.0
+
+The first phase of the react migration is integrating a new build system using Webpack 2.0. In order to get this working there were a few changes that needed to be made:
+
+* Setup Webpack Config
+* Index files for controllers, directives & services
+* Remove script tags in index.html file
+
+### Original ReadMe below
+
 # AngularJS TodoMVC Example
 
 > HTML is great for declaring static documents, but it falters when we try to use it for declaring dynamic views in web-applications. AngularJS lets you extend HTML vocabulary for your application. The resulting environment is extraordinarily expressive, readable, and quick to develop.
