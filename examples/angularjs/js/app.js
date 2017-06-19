@@ -5,15 +5,14 @@ angular.module('todomvc', ['ngRoute', 'ngResource'])
 		const routeConfig = {
 			controller: 'TodoCtrl as $ctrl',
 			templateUrl: '../views/todomvc-index.html',
-            resolve: {
-                store: function (todoStorage) {
-                    // Get the correct module (API or localStorage).
-                    return todoStorage.then(function (module) {
-                        module.get(); // Fetch the todo records in the background.
-                        return module;
-                    });
-                }
-            }
+            // resolve: {
+            //     store: function () {
+            //     	// Import pure js  todoStorage service file and return it as 'store' to controller.
+            //     	const todoStorage = require('./services/todoStorage');
+            //     	todoStorage.get();
+            //     	return todoStorage;
+            //     }
+            // }
 		};
 
 		$routeProvider
@@ -25,5 +24,4 @@ angular.module('todomvc', ['ngRoute', 'ngResource'])
 	});
 
 require('controllers');
-require('services');
 require('directives');

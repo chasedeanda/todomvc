@@ -1,8 +1,10 @@
+const todoStorage = require('services/todoStorage');
+
 class TodoCtrl {
-	constructor($scope, $routeParams, $filter, store){
+	constructor($scope, $routeParams, $filter){
 
 		// Assign all $scope variables to this
-		this.todos = $scope.todos = store.todos;
+		this.todos = $scope.todos = todoStorage.todos;
 		this.newTodo = '';
 		this.originalTodo = null;
 		this.editedTodo = null;
@@ -15,8 +17,8 @@ class TodoCtrl {
 		this.saveEvent = null;
 		this.reverted = null;
 
-		// Assign store factory to this.store
-		this.store = store;
+		// Assign scope to this.scope. For forcing digest cycle in functions.
+		this.scope = $scope;
 
 		// Bind all class functions to this
 		this.addTodo = this.addTodo.bind(this);
@@ -28,6 +30,9 @@ class TodoCtrl {
 		this.toggleCompleted = this.toggleCompleted.bind(this);
 		this.clearCompletedTodos = this.clearCompletedTodos.bind(this);
 		this.markAll = this.markAll.bind(this);
+
+		// Fetch todos
+		todoStorage.get();
 
 		// Attach any $scope listeners
         $scope.$watch('todos', () => {
@@ -57,13 +62,10 @@ class TodoCtrl {
 		}
 
 		this.saving = true;
-		this.store.insert(newTodo)
-			.then(() => {
-				this.newTodo = '';
-			})
-			.finally(() => {
-				this.saving = false;
-			});
+		todoStorage.insert(newTodo)
+			.then(() => this.newTodo = '')
+			.then(() => this.saving = false)
+			.then(() => this.scope.$apply());
 	}
 
 	editTodo(todo) {
@@ -95,11 +97,11 @@ class TodoCtrl {
 			return;
 		}
 
-        this.store[todo.title ? 'put' : 'delete'](todo)
+        todoStorage[todo.title ? 'put' : 'delete'](todo)
 			.then(() => {}, () => {
 				todo.title = this.originalTodo.title;
 			})
-			.finally(() => {
+			.then(() => {
                 this.editedTodo = null;
 			});
 	}
@@ -112,25 +114,25 @@ class TodoCtrl {
 	}
 
 	removeTodo(todo) {
-		this.store.delete(todo);
+		todoStorage.delete(todo);
 	}
 
 	saveTodo(todo) {
-		this.store.put(todo);
+		todoStorage.put(todo);
 	}
 
 	toggleCompleted(todo, completed) {
 		if (angular.isDefined(completed)) {
 			todo.completed = completed;
 		}
-		this.store.put(todo, this.todos.indexOf(todo))
+		todoStorage.put(todo, this.todos.indexOf(todo))
 			.then(() => {}, () => {
 				todo.completed = !todo.completed;
 			});
 	}
 
 	clearCompletedTodos() {
-		this.store.clearCompleted();
+		todoStorage.clearCompleted();
 	}
 
 	markAll(completed) {

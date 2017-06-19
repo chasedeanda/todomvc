@@ -9,6 +9,7 @@
     "angular-resource": "^1.4.3",
     "angular-route": "^ 1.4.3",
     "angular-ui-router": "0.4.2",
+    "axios": "^0.16.2",
     "babel-cli": "^6.24.1",
     "babel-loader": "^7.0.0",
     "case-sensitive-paths-webpack-plugin": "^2.0.0",

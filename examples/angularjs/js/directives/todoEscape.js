@@ -7,16 +7,16 @@
 function todoEscape () {
 	'use strict';
 
-	var ESCAPE_KEY = 27;
+	const ESCAPE_KEY = 27;
 
-	return function (scope, elem, attrs) {
-		elem.bind('keydown', function (event) {
+	return (scope, elem, attrs) => {
+		elem.bind('keydown', event => {
 			if (event.keyCode === ESCAPE_KEY) {
 				scope.$apply(attrs.todoEscape);
 			}
 		});
 
-		scope.$on('$destroy', function () {
+		scope.$on('$destroy', () => {
 			elem.unbind('keydown');
 		});
 	};
