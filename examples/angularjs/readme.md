@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 # Phase 2: 
 
-
+* ES6 classes
+* Fat arrows
+* Controller as $ctrl
 
 
 

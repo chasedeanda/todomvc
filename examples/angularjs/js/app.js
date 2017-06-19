@@ -3,7 +3,7 @@ angular.module('todomvc', ['ngRoute', 'ngResource'])
 		'use strict';
 
 		const routeConfig = {
-			controller: 'TodoCtrl',
+			controller: 'TodoCtrl as $ctrl',
 			templateUrl: '../views/todomvc-index.html',
             resolve: {
                 store: function (todoStorage) {

@@ -1,28 +1,54 @@
-function TodoCtrl($scope, $routeParams, $filter, store) {
-	'use strict';
+class TodoCtrl {
+	constructor($scope, $routeParams, $filter, store){
 
-	var todos = $scope.todos = store.todos;
+		// Assign all $scope variables to this
+		this.todos = $scope.todos = store.todos;
+		this.newTodo = '';
+		this.originalTodo = null;
+		this.editedTodo = null;
+		this.remainingCount = null;
+		this.completedCount = null;
+		this.allChecked = false;
+		this.statusFilter = null;
+		this.status = '';
+		this.saving = false;
+		this.saveEvent = null;
+		this.reverted = null;
 
-	$scope.newTodo = '';
-	$scope.editedTodo = null;
+		// Assign store factory to this.store
+		this.store = store;
 
-	$scope.$watch('todos', function () {
-		$scope.remainingCount = $filter('filter')(todos, { completed: false }).length;
-		$scope.completedCount = todos.length - $scope.remainingCount;
-		$scope.allChecked = !$scope.remainingCount;
-	}, true);
+		// Bind all class functions to this
+		this.addTodo = this.addTodo.bind(this);
+		this.editedTodo = this.editTodo.bind(this);
+		this.saveEdits = this.saveEdits.bind(this);
+		this.revertEdits = this.revertEdits.bind(this);
+		this.removeTodo = this.removeTodo.bind(this);
+		this.saveTodo = this.saveTodo.bind(this);
+		this.toggleCompleted = this.toggleCompleted.bind(this);
+		this.clearCompletedTodos = this.clearCompletedTodos.bind(this);
+		this.markAll = this.markAll.bind(this);
 
-	// Monitor the current route for changes and adjust the filter accordingly.
-	$scope.$on('$routeChangeSuccess', function () {
-		var status = $scope.status = $routeParams.status || '';
-		$scope.statusFilter = (status === 'active') ?
-			{ completed: false } : (status === 'completed') ?
-			{ completed: true } : {};
-	});
+		// Attach any $scope listeners
+        $scope.$watch('todos', () => {
+            this.remainingCount = $filter('filter')(this.todos, { completed: false }).length;
+            this.completedCount = this.todos.length - this.remainingCount;
+            this.allChecked = !this.remainingCount;
+        }, true);
 
-	$scope.addTodo = function () {
-		var newTodo = {
-			title: $scope.newTodo.trim(),
+        // Monitor the current route for changes and adjust the filter accordingly.
+        $scope.$on('$routeChangeSuccess', () => {
+            const status = this.status = $routeParams.status || '';
+            this.statusFilter = (status === 'active') ?
+                { completed: false } : (status === 'completed') ?
+                    { completed: true } : {};
+        });
+
+	}
+
+	addTodo () {
+		const newTodo = {
+			title: this.newTodo.trim(),
 			completed: false
 		};
 
@@ -30,90 +56,90 @@ function TodoCtrl($scope, $routeParams, $filter, store) {
 			return;
 		}
 
-		$scope.saving = true;
-		store.insert(newTodo)
-			.then(function success() {
-				$scope.newTodo = '';
+		this.saving = true;
+		this.store.insert(newTodo)
+			.then(() => {
+				this.newTodo = '';
 			})
-			.finally(function () {
-				$scope.saving = false;
+			.finally(() => {
+				this.saving = false;
 			});
-	};
+	}
 
-	$scope.editTodo = function (todo) {
-		$scope.editedTodo = todo;
+	editTodo(todo) {
+		this.editedTodo = todo;
 		// Clone the original todo to restore it on demand.
-		$scope.originalTodo = angular.extend({}, todo);
-	};
+        this.originalTodo = angular.extend({}, todo);
+	}
 
-	$scope.saveEdits = function (todo, event) {
+	saveEdits(todo, event) {
 		// Blur events are automatically triggered after the form submit event.
 		// This does some unfortunate logic handling to prevent saving twice.
-		if (event === 'blur' && $scope.saveEvent === 'submit') {
-			$scope.saveEvent = null;
+		if (event === 'blur' && this.saveEvent === 'submit') {
+            this.saveEvent = null;
 			return;
 		}
 
-		$scope.saveEvent = event;
+        this.saveEvent = event;
 
-		if ($scope.reverted) {
+		if (this.reverted) {
 			// Todo edits were reverted-- don't save.
-			$scope.reverted = null;
+            this.reverted = null;
 			return;
 		}
 
 		todo.title = todo.title.trim();
 
-		if (todo.title === $scope.originalTodo.title) {
-			$scope.editedTodo = null;
+		if (todo.title === this.originalTodo.title) {
+            this.editedTodo = null;
 			return;
 		}
 
-		store[todo.title ? 'put' : 'delete'](todo)
-			.then(function success() {}, function error() {
-				todo.title = $scope.originalTodo.title;
+        this.store[todo.title ? 'put' : 'delete'](todo)
+			.then(() => {}, () => {
+				todo.title = this.originalTodo.title;
 			})
-			.finally(function () {
-				$scope.editedTodo = null;
+			.finally(() => {
+                this.editedTodo = null;
 			});
-	};
+	}
 
-	$scope.revertEdits = function (todo) {
-		todos[todos.indexOf(todo)] = $scope.originalTodo;
-		$scope.editedTodo = null;
-		$scope.originalTodo = null;
-		$scope.reverted = true;
-	};
+	revertEdits(todo) {
+        this.todos[this.todos.indexOf(todo)] = this.originalTodo;
+        this.editedTodo = null;
+        this.originalTodo = null;
+        this.reverted = true;
+	}
 
-	$scope.removeTodo = function (todo) {
-		store.delete(todo);
-	};
+	removeTodo(todo) {
+		this.store.delete(todo);
+	}
 
-	$scope.saveTodo = function (todo) {
-		store.put(todo);
-	};
+	saveTodo(todo) {
+		this.store.put(todo);
+	}
 
-	$scope.toggleCompleted = function (todo, completed) {
+	toggleCompleted(todo, completed) {
 		if (angular.isDefined(completed)) {
 			todo.completed = completed;
 		}
-		store.put(todo, todos.indexOf(todo))
-			.then(function success() {}, function error() {
+		this.store.put(todo, this.todos.indexOf(todo))
+			.then(() => {}, () => {
 				todo.completed = !todo.completed;
 			});
-	};
+	}
 
-	$scope.clearCompletedTodos = function () {
-		store.clearCompleted();
-	};
+	clearCompletedTodos() {
+		this.store.clearCompleted();
+	}
 
-	$scope.markAll = function (completed) {
-		todos.forEach(function (todo) {
+	markAll(completed) {
+		this.todos.forEach( todo => {
 			if (todo.completed !== completed) {
-				$scope.toggleCompleted(todo, completed);
+				this.toggleCompleted(todo, completed);
 			}
 		});
-	};
+	}
 }
 
 module.exports = TodoCtrl;
