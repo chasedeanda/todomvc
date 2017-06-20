@@ -2,8 +2,7 @@ module.exports = function (cssPlugin, ROOT, isProd) {
     const babel = {
         test: /\.js$/,
         use: [
-            'babel-loader',
-            'ng-annotate-loader'
+            'babel-loader'
         ],
         exclude: /node_modules/
     };
@@ -22,12 +21,6 @@ module.exports = function (cssPlugin, ROOT, isProd) {
         test: require.resolve('angular'),
         use: [
             'exports-loader?window.angular'
-        ]
-    };
-    const angularModules = {
-        test: /\/angular(.min)?\.js$/,
-        use: [
-            'remove-angular-modules-loader?moduleName=av-web'
         ]
     };
 

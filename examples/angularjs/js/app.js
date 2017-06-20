@@ -1,7 +1,5 @@
 angular.module('todomvc', ['ngRoute', 'ngResource'])
 	.config(function ($routeProvider) {
-		'use strict';
-
 		const routeConfig = {
 			controller: 'TodoCtrl as $ctrl',
 			templateUrl: '../views/todomvc-index.html',
@@ -22,6 +20,6 @@ angular.module('todomvc', ['ngRoute', 'ngResource'])
 				redirectTo: '/'
 			});
 	});
-
 require('controllers');
 require('directives');
+require('components');

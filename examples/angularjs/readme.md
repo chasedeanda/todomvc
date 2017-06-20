@@ -1,12 +1,10 @@
-<<<<<<< HEAD
-# Phase 2: ES6 Refactor. Welcome to the future!
+# Phase 3: Bring in React
 
-* ES6 classes
-* Fat arrows
-* Controller as $ctrl
-* Rewrite services as pure JS
+* react2angular
+* Better Imports
+* Rewrite directives as React Components
 
-
+Phase 4: Routing & State Management
 
 ### Original ReadMe below
 

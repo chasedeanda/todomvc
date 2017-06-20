@@ -49,7 +49,7 @@ module.exports = function plugins (cssPlugin, isProd, ROOT) {
     const names = new webpack.NamedModulesPlugin();
     const force = new CaseSensitivePathsPlugin();
     const html = new HtmlWebpackPlugin({
-        title: 'Research Now – ADimension',
+        title: 'AngularJS TodoMVC',
         filename: 'index.html',
         template: ROOT + '/index.html'
     });

@@ -4,7 +4,6 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const ROOT = __dirname + '/../../';
 const PORT = '9000';
 
-console.log(ROOT)
 module.exports = (isProd) => {
 
     const appName = isProd ? '[name].[chunkhash].js' : 'app.bundle.js';
