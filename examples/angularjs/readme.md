@@ -3,6 +3,7 @@
 * react2angular
 * Better Imports
 * Rewrite directives as React Components
+* Update State method
 
 Phase 4: Routing & State Management
 

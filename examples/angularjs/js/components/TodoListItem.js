@@ -1,14 +1,42 @@
+import { PropTypes, Component, classNames } from 'vendors';
+
+const { object, func } = PropTypes;
+
 export default class TodoListItem extends Component {
+    static propTypes = {
+        todo: object,
+        editedTodo: object,
+        toggleCompleted: func.isRequired,
+        editTodo: func.isRequired,
+        removeTodo: func.isRequired,
+        saveEdits: func.isRequired
+    }
+    constructor(props){
+        super(props);
+        this.state = {
+            completed: props.todo.completed,
+            title: props.todo.title
+        }
+    }
+    componentWillReceiveProps(nextProps){
+        // Update completed state
+        this.setState({
+           completed: nextProps.todo.completed,
+           title: nextProps.todo.title
+        });
+    }
     render(){
+        const { todo, editedTodo } = this.props;
+        const { completed, title } = this.state;
         return (
-            <li ng-repeat="todo in $ctrl.todos | filter:$ctrl.statusFilter track by $index" ng-class="{completed: todo.completed, editing: todo == $ctrl.editedTodo}">
-                <div class="view">
-                    <input class="toggle" type="checkbox" ng-model="todo.completed" ng-change="$ctrl.toggleCompleted(todo)"/>
-                    <label ng-dblclick="$ctrl.editTodo(todo)">{{todo.title}}</label>
-                    <button class="destroy" ng-click="$ctrl.removeTodo(todo)"></button>
+            <li className={classNames({'completed': todo.completed}, {'editing': todo === editedTodo})}>
+                <div className="view">
+                    <input className="toggle" type="checkbox" checked={completed} onChange={() => this.props.toggleCompleted(todo, !todo.completed)} />
+                    <label onDoubleClick={() => this.props.editTodo(todo)}>{todo.title}</label>
+                    <button className="destroy" onClick={() => this.props.removeTodo(todo)}></button>
                 </div>
-                <form ng-submit="$ctrl.saveEdits(todo, 'submit')">
-                    <input class="edit" ng-trim="false" ng-model="todo.title" todo-escape="$ctrl.revertEdits(todo)" ng-blur="$ctrl.saveEdits(todo, 'blur')" todo-focus="todo == $ctrl.editedTodo" />
+                <form onSubmit={(e) => { e.preventDefault(); this.props.saveEdits(todo, 'submit') }}>
+                    <input className="edit" value={title} onChange={(e) => this.setState({ title: e.target.value })} onBlur={() => this.props.saveEdits(todo, 'blur')} /> {/*todo-escape="$ctrl.revertEdits(todo)" todo-focus="todo == $ctrl.editedTodo" />*/}
                 </form>
             </li>
         )

@@ -1,5 +1,6 @@
 angular.module('todomvc', ['ngRoute', 'ngResource'])
-	.config(function ($routeProvider) {
+	.config(function ($routeProvider, $locationProvider) {
+
 		const routeConfig = {
 			controller: 'TodoCtrl as $ctrl',
 			templateUrl: '../views/todomvc-index.html',
@@ -19,6 +20,7 @@ angular.module('todomvc', ['ngRoute', 'ngResource'])
 			.otherwise({
 				redirectTo: '/'
 			});
+        $locationProvider.html5Mode(true);
 	});
 require('controllers');
 require('directives');
