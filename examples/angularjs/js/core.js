@@ -2,7 +2,8 @@
 //that you want to make available through an import.
 const deps = [
     '$http',
-    '$filter'
+    '$filter',
+    '$routeParams'
 ];
 //Create dependency export object
 let exports = _.zipObject(deps, _.map(deps, () => {}));

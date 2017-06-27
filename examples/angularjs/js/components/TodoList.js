@@ -29,7 +29,7 @@ export default class TodoList extends Component {
     }
     renderListItems(){
         const statusFilter = this.props.statusFilter || {};
-        return this.props.todos.filter( todo => !statusFilter.completed || todo.completed === statusFilter.completed )
+        return this.props.todos.filter( todo => Object.keys(statusFilter).length === 0 || todo.completed === statusFilter.completed )
             .map( todo => {
                return <TodoListItem
                         key={todo.title}

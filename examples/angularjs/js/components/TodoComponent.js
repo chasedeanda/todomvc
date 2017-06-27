@@ -21,7 +21,8 @@ export default class TodoComponent extends Component {
         editTodo: func.isRequired,
         removeTodo: func.isRequired,
         saveEdits: func.isRequired,
-        addTodo: func.isRequired
+        addTodo: func.isRequired,
+        revertEdits: func.isRequired
     }
     constructor(props){
         super(props);

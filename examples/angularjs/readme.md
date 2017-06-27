@@ -1,11 +1,9 @@
-# Phase 3: Bring in React
+# Phase 3: Bringing in React
 
-* react2angular
-* Better Imports
-* Rewrite directives as React Components
-* Update State method
-
-Phase 4: Routing & State Management
+* React components as AngularJS components using react2angular
+* Better Imports - How to handle AngularJS dependency injection
+* Convert view to React
+* Convert directives to React 
 
 ### Original ReadMe below
 

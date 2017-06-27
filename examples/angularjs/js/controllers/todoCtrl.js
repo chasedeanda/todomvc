@@ -1,7 +1,9 @@
 const todoStorage = require('services/todoStorage');
 
+import { $routeParams, $filter } from 'core';
+
 class TodoCtrl {
-	constructor($scope, $routeParams, $filter){
+	constructor($scope){
 
 		// Assign all $scope variables to this
 		this.todos = $scope.todos = todoStorage.todos;
@@ -44,9 +46,7 @@ class TodoCtrl {
         // Monitor the current route for changes and adjust the filter accordingly.
         $scope.$on('$routeChangeSuccess', () => {
             const status = this.status = $routeParams.status || '';
-            this.statusFilter = (status === 'active') ?
-                { completed: false } : (status === 'completed') ?
-                    { completed: true } : {};
+            this.statusFilter = status ? { completed: status === 'completed' } : {};
         });
 
 	}
@@ -99,9 +99,10 @@ class TodoCtrl {
 		}
 
         todoStorage[todo.title ? 'put' : 'delete'](todo)
-			.then(() => {}, () => todo.title = this.originalTodo.title)
-			.then(() => this.editedTodo = null)
-	        .then(() => this.$scope.$apply());
+			.then(() => {
+                this.editedTodo = null;
+                this.scope.$apply()
+			}, () => todo.title = this.originalTodo.title)
 	}
 
 	revertEdits(todo) {
