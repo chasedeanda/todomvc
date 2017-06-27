@@ -1,4 +1,4 @@
-import { PropTypes, autoBind, Component, pluralize, classNames } from 'vendors';
+import { PropTypes, autoBind, Component, pluralize, classNames, Link } from 'vendors';
 
 import TodoListItem from './TodoListItem';
 
@@ -20,9 +20,6 @@ export default class TodoList extends Component {
         removeTodo: func.isRequired,
         saveEdits: func.isRequired
     }
-    state = {
-        allChecked: false
-    }
     constructor(){
         super();
         autoBind(this);
@@ -38,15 +35,9 @@ export default class TodoList extends Component {
                       />
             });
     }
-    componentWillReceiveProps(nextProps){
-        this.setState({
-            allChecked: nextProps.allChecked
-        });
-    }
     render(){
         const listItems = this.renderListItems();
-        const { todos, remainingCount, completedCount, status } = this.props;
-        const { allChecked } = this.state;
+        const { todos, remainingCount, completedCount, status, allChecked, markAll, clearCompletedTodos } = this.props;
         // Only return content if there are todos
         if(todos.length === 0){
             return null
@@ -54,7 +45,7 @@ export default class TodoList extends Component {
         return (
             <div>
                 <section id="main">
-                    <input id="toggle-all" type="checkbox" checked={allChecked} onChange={() => this.props.markAll(!allChecked)}/>
+                    <input id="toggle-all" type="checkbox" checked={allChecked} onChange={() => markAll(!allChecked)}/>
                     <label htmlFor="toggle-all">Mark all as complete</label>
                     <ul id="todo-list">
                         {listItems}
@@ -67,16 +58,16 @@ export default class TodoList extends Component {
                     </span>
                     <ul id="filters">
                         <li>
-                            <a className={classNames({ 'selected': !status })} href="/">All</a>
+                            <Link className={classNames({ 'selected': !status })} to="/">All</Link>
                         </li>
                         <li>
-                            <a className={classNames({ 'selected': status === 'active' })} href="/active">Active</a>
+                            <Link className={classNames({ 'selected': status === 'active' })} to="/active">Active</Link>
                         </li>
                         <li>
-                            <a className={classNames({ 'selected': status === 'completed' })} href="/completed">Completed</a>
+                            <Link className={classNames({ 'selected': status === 'completed' })} to="/completed">Completed</Link>
                         </li>
                     </ul>
-                    {completedCount > 0 && <button id="clear-completed" onClick={this.props.clearCompletedTodos}>Clear completed</button>}
+                    {completedCount > 0 && <button id="clear-completed" onClick={clearCompletedTodos}>Clear completed</button>}
                 </footer>
             </div>
         )

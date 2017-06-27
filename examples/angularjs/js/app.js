@@ -1,23 +1,16 @@
-import ReactRouter from './components/Router';
+import { ReactDOM, React } from 'vendors';
 
-angular.module('todomvc', ['ngRoute', 'ngResource'])
-	.config(function ($routeProvider, $locationProvider) {
+import TodoComponent from 'components/TodoComponent';
 
-		const routeConfig = {
-			controller: 'TodoCtrl as $ctrl',
-			templateUrl: '../views/todomvc-index.html'
-		};
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-		$routeProvider
-			.when('/', routeConfig)
-			.when('/:status', { template: ReactRouter })
-			.otherwise({
-				redirectTo: '/'
-			});
+const ReactRouter =  (
+	<Router>
+		<div>
+			<Route exact path="/" component={TodoComponent} />
+			<Route path="/:status" component={TodoComponent} />
+		</div>
+	</Router>
+);
 
-        $locationProvider.html5Mode(true);
-
-	});
-
-require('controllers');
-require('components');
+ReactDOM.render(ReactRouter, document.querySelector('#root'));
