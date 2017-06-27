@@ -1,3 +1,5 @@
+import ReactRouter from './components/Router';
+
 angular.module('todomvc', ['ngRoute', 'ngResource'])
 	.config(function ($routeProvider, $locationProvider) {
 
@@ -8,7 +10,7 @@ angular.module('todomvc', ['ngRoute', 'ngResource'])
 
 		$routeProvider
 			.when('/', routeConfig)
-			.when('/:status', routeConfig)
+			.when('/:status', { template: ReactRouter })
 			.otherwise({
 				redirectTo: '/'
 			});
