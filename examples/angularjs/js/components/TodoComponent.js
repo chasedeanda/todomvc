@@ -1,67 +1,184 @@
 import { PropTypes, Component, axios, autoBind } from 'vendors';
+import { $filter, $routeParams } from 'core'
+
+import todoStorage from '../services/todoStorage';
 
 import TodoList from './TodoList';
 
-const { array, bool, func, string, number, object } = PropTypes;
-
 export default class TodoComponent extends Component {
-    static propTypes = {
-        todos: array,
-        saving: bool,
-        newTodo: string,
-        allChecked: bool,
-        remainingCount: number,
-        completedCount: number,
-        status: string,
-        statusFilter: object,
-        editedTodo: object,
-        markAll: func.isRequired,
-        clearCompletedTodos: func.isRequired,
-        toggleCompleted: func.isRequired,
-        editTodo: func.isRequired,
-        removeTodo: func.isRequired,
-        saveEdits: func.isRequired,
-        addTodo: func.isRequired,
-        revertEdits: func.isRequired
-    }
-    constructor(props){
-        super(props);
+    constructor(){
+        super();
         autoBind(this);
         this.state = {
-            newTodo: ''
+            newTodo: '',
+            todos: [],
+            originalTodo: null,
+            editedTodo: null,
+            remainingCount: null,
+            completedCount: null,
+            allChecked: false,
+            statusFilter: $routeParams.status ? { completed: $routeParams.status === 'completed' } : {},
+            status: $routeParams.status || '',
+            saving: false,
+            saveEvent: null,
+            reverted: null
         };
     }
-    handleSubmit(e){
-        e.preventDefault();
-        const val = this.todo.value;
-        this.props.addTodo(val);
+    componentDidMount(){
+       this.fetchTodos();
     }
-    componentWillReceiveProps(nextProps){
+    fetchTodos(){
+        // Fetch todos
+        todoStorage.get()
+            .then( data => {
+                const remainingCount = $filter('filter')(data, { completed: false }).length;
+                this.setState({
+                    todos: data,
+                    remainingCount: remainingCount,
+                    completedCount: data.length - remainingCount,
+                    allChecked: !remainingCount
+                });
+            });
+    }
+    addTodo (e) {
+        e.preventDefault();
+        const newTodo = {
+            title: this.state.newTodo.trim(),
+            completed: false
+        };
+        if (!newTodo.title) {
+            return;
+        }
         this.setState({
-            newTodo: nextProps.newTodo
+            saving: true
+        });
+        todoStorage.insert(newTodo)
+            .then(() => {
+                this.setState({
+                    newTodo: '',
+                    saving: false
+                });
+            });
+    }
+    editTodo(todo) {
+        this.setState({
+            editedTodo: todo,
+            originalTodo: {...todo} // Clone the original todo to restore it on demand.
+        });
+    }
+    saveEdits(todo, event) {
+        const { saveEvent, reverted, originalTodo } = this.state;
+        // Blur events are automatically triggered after the form submit event.
+        // This does some unfortunate logic handling to prevent saving twice.
+        if (event === 'blur' && saveEvent === 'submit') {
+            this.setState({
+                saveEvent: null
+            });
+            return;
+        }
+
+        this.setState({
+            saveEvent: event
+        });
+
+        if (reverted) {
+            // Todo edits were reverted-- don't save.
+            this.setState({
+                reverted: null
+            });
+            return;
+        }
+
+        todo.title = todo.title.trim();
+
+        if (todo.title === originalTodo.title) {
+            this.setState({
+                editedTodo: null
+            });
+            return;
+        }
+
+        todoStorage[todo.title ? 'put' : 'delete'](todo)
+            .then(() => {
+                this.setState({
+                    editedTodo: null
+                });
+                this.fetchTodos();
+            }, () => todo.title = originalTodo.title)
+    }
+    revertEdits(todo) {
+        const { todos, originalTodo } = this.state;
+        todos[todos.indexOf(todo)] = originalTodo;
+        this.setState({
+            editedTodo: null,
+            originalTodo: null,
+            reverted: true
+        });
+    }
+    removeTodo(todo) {
+        todoStorage.delete(todo).
+            then(this.fetchTodos());
+    }
+    saveTodo(todo) {
+        todoStorage.put(todo)
+            .then(this.fetchTodos());
+    }
+    toggleCompleted(todo, completed) {
+        const { todos } = this.state;
+        if (completed != null) {
+            todo.completed = completed;
+        }
+        todoStorage.put(todo, todos.indexOf(todo))
+            .then( this.fetchTodos(), () => todo.completed = !todo.completed)
+    }
+    clearCompletedTodos() {
+        todoStorage.clearCompleted()
+            .then(this.fetchTodos());
+
+    }
+    markAll(completed) {
+        const { todos } = this.state;
+        console.log(completed)
+        todos.forEach( todo => {
+            if (todo.completed !== completed) {
+                this.toggleCompleted(todo, completed);
+            }
+        });
+        this.setState({
+            todos: todos,
+            allChecked: completed
         });
     }
     render(){
-        const { newTodo } = this.state;
-        const { todos, saving } = this.props;
+        const { newTodo, todos, saving } = this.state;
         return (
             <div>
                 <section id="todoapp">
                     <header id="header">
                         <h1>todos</h1>
-                        <form id="todo-form" onSubmit={this.handleSubmit}>
+                        <form id="todo-form" onSubmit={this.addTodo}>
                             <input
                                 id="new-todo"
                                 placeholder="What needs to be done?"
                                 value={newTodo}
                                 onChange={(e) => this.setState({newTodo: e.target.value})}
                                 disabled={saving}
-                                ref={ ref => this.todo = ref }
                                 autoFocus
                             />
                         </form>
                     </header>
-                    <TodoList todos={todos} {...this.props} />
+                    <TodoList
+                        todos={todos}
+                        markAll={this.markAll}
+                        clearCompletedTodos={this.clearCompletedTodos}
+                        toggleCompleted={this.toggleCompleted}
+                        editTodo={this.editTodo}
+                        removeTodo={this.removeTodo}
+                        saveEdits={this.saveEdits}
+                        addTodo={this.addTodo}
+                        revertEdits={this.revertEdits}
+                        {...this.state}
+                    />
                 </section>
                 <footer id="info">
                     <p>Double-click to edit a todo</p>

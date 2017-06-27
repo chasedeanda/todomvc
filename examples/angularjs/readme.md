@@ -1,9 +1,7 @@
-# Phase 3: Bringing in React
+# Phase 3.5: Bringing in (More) React
 
-* React components as AngularJS components using react2angular
 * Better Imports - How to handle AngularJS dependency injection
-* Convert view to React
-* Convert directives to React 
+* Convert controllers to React container components
 
 ### Original ReadMe below
 

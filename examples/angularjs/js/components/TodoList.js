@@ -20,9 +20,6 @@ export default class TodoList extends Component {
         removeTodo: func.isRequired,
         saveEdits: func.isRequired
     }
-    state = {
-        allChecked: false
-    }
     constructor(){
         super();
         autoBind(this);
@@ -38,15 +35,9 @@ export default class TodoList extends Component {
                       />
             });
     }
-    componentWillReceiveProps(nextProps){
-        this.setState({
-            allChecked: nextProps.allChecked
-        });
-    }
     render(){
         const listItems = this.renderListItems();
-        const { todos, remainingCount, completedCount, status } = this.props;
-        const { allChecked } = this.state;
+        const { todos, remainingCount, completedCount, status, allChecked, markAll, clearCompletedTodos } = this.props;
         // Only return content if there are todos
         if(todos.length === 0){
             return null
@@ -54,7 +45,7 @@ export default class TodoList extends Component {
         return (
             <div>
                 <section id="main">
-                    <input id="toggle-all" type="checkbox" checked={allChecked} onChange={() => this.props.markAll(!allChecked)}/>
+                    <input id="toggle-all" type="checkbox" checked={allChecked} onChange={() => markAll(!allChecked)}/>
                     <label htmlFor="toggle-all">Mark all as complete</label>
                     <ul id="todo-list">
                         {listItems}
@@ -76,7 +67,7 @@ export default class TodoList extends Component {
                             <a className={classNames({ 'selected': status === 'completed' })} href="/completed">Completed</a>
                         </li>
                     </ul>
-                    {completedCount > 0 && <button id="clear-completed" onClick={this.props.clearCompletedTodos}>Clear completed</button>}
+                    {completedCount > 0 && <button id="clear-completed" onClick={clearCompletedTodos}>Clear completed</button>}
                 </footer>
             </div>
         )

@@ -2,8 +2,7 @@ angular.module('todomvc', ['ngRoute', 'ngResource'])
 	.config(function ($routeProvider, $locationProvider) {
 
 		const routeConfig = {
-			controller: 'TodoCtrl as $ctrl',
-			templateUrl: '../views/todomvc-index.html'
+			template: '<todo-component></todo-component>'
 		};
 
 		$routeProvider
@@ -17,5 +16,4 @@ angular.module('todomvc', ['ngRoute', 'ngResource'])
 
 	});
 
-require('controllers');
 require('components');
