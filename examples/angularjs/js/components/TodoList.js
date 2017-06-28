@@ -1,4 +1,4 @@
-import { PropTypes, autoBind, Component, pluralize, classNames, Link } from 'vendors';
+import { PropTypes, autoBind, Component, pluralize, classNames } from 'vendors';
 
 import TodoListItem from './TodoListItem';
 
@@ -58,13 +58,13 @@ export default class TodoList extends Component {
                     </span>
                     <ul id="filters">
                         <li>
-                            <Link className={classNames({ 'selected': !status })} to="/">All</Link>
+                            <a className={classNames({ 'selected': !status })} href="/">All</a>
                         </li>
                         <li>
-                            <Link className={classNames({ 'selected': status === 'active' })} to="/active">Active</Link>
+                            <a className={classNames({ 'selected': status === 'active' })} href="/active">Active</a>
                         </li>
                         <li>
-                            <Link className={classNames({ 'selected': status === 'completed' })} to="/completed">Completed</Link>
+                            <a className={classNames({ 'selected': status === 'completed' })} href="/completed">Completed</a>
                         </li>
                     </ul>
                     {completedCount > 0 && <button id="clear-completed" onClick={clearCompletedTodos}>Clear completed</button>}

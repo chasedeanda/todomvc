@@ -1,7 +1,7 @@
-# Phase 3.5: Bringing in (More) React
+# Phase 4: Dual Routing??
 
-* Better Imports - How to handle AngularJS dependency injection
-* Convert controllers to React container components
+* Setup react-router
+* Handle routing to angular or react based on route
 
 ### Original ReadMe below
 
