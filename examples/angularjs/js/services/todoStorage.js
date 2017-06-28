@@ -35,7 +35,7 @@ const todoStorage = (function () {
 			return new Promise( (resolve, reject) => {
                 const incompleteTodos = store.todos.filter( todo => !todo.completed );
 
-                angular.copy(incompleteTodos, store.todos);
+                store.todos = Object.assign(store.todos, incompleteTodos);
 
                 store._saveToLocalStorage(store.todos);
                 resolve(store.todos);
@@ -53,7 +53,7 @@ const todoStorage = (function () {
 
 		get: function () {
 			return new Promise( (resolve, reject) => {
-                angular.copy(store._getFromLocalStorage(), store.todos);
+                store.todos = Object.assign(store.todos, store._getFromLocalStorage());
                 resolve(store.todos);
 			});
 		},

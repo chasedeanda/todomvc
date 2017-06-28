@@ -9,9 +9,6 @@ module.exports = (isProd) => {
     const appName = isProd ? '[name].[chunkhash].js' : 'app.bundle.js';
 
     let vendorFiles = [
-        'angular',
-        'angular-route',
-        'angular-resource',
         'react',
         'lodash'
     ];

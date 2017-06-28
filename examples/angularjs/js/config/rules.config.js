@@ -17,14 +17,8 @@ module.exports = function (cssPlugin, ROOT, isProd) {
         test: /\.s?css$/,
         use: ['style-loader', 'css-loader?sourceMap', 'resolve-url-loader', 'sass-loader?sourceMap']
     };
-    const angular = {
-        test: require.resolve('angular'),
-        use: [
-            'exports-loader?window.angular'
-        ]
-    };
 
-    const common = [babel, angular];
+    const common = [babel];
     const dev = [inline_scss];
     const prod = [scss];
 
