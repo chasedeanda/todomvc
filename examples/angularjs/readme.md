@@ -1,7 +1,8 @@
-# Phase 3.5: Bringing in (More) React
+# Phase 4.5: Removing Angular
 
-* Better Imports - How to handle AngularJS dependency injection
-* Convert controllers to React container components
+* Rewrite/replace last Angular dependencies ($filter, $routeParams)
+* Prune webpack config
+* Prune packages
 
 ### Original ReadMe below
 
