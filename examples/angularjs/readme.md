@@ -2,6 +2,7 @@
 
 * Setup react-router
 * Handle routing to angular or react based on route
+* Handle different url params structure in components
 
 ### Original ReadMe below
 
